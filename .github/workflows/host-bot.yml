@@ -1,0 +1,42 @@
+name: TvHost Bot
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'bot.js'
+      - '.github/workflows/host-bot.yml'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: tvhost-bot
+  cancel-in-progress: true
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - name: Check out bot code
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check required secret
+        env:
+          TVCORD_BOT_TOKEN: ${{ secrets.TVCORD_BOT_TOKEN }}
+        run: |
+          if [ -z "$TVCORD_BOT_TOKEN" ]; then
+            echo "::error::Missing TVCORD_BOT_TOKEN. Launch TvHost from the website to set it."
+            exit 1
+          fi
+          echo "Bot token secret is configured."
+      - name: Run bot
+        env:
+          TVCORD_BOT_TOKEN: ${{ secrets.TVCORD_BOT_TOKEN }}
+        run: |
+          if [ ! -f bot.js ]; then
+            echo "::error::bot.js was not found."
+            exit 1
+          fi
+          node bot.js
