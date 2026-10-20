@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TvHost — TvCord Bot Hosting</title>
+<style>
+:root{color-scheme:dark;--bg:#090a0f;--panel:#12141d;--line:#292d3a;--red:#e11d48;--muted:#a0a6b8}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#25101b 0,#090a0f 48%);color:#f5f6fa;font:15px system-ui,-apple-system,sans-serif;min-height:100vh}
+header{padding:22px max(18px,calc((100vw - 1100px)/2));border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;background:#090a0fcc;position:sticky;top:0;backdrop-filter:blur(12px)}
+.brand{font-size:22px;font-weight:850;letter-spacing:-.7px}.brand span{color:var(--red)}a{color:#ff7895}main{max-width:1100px;margin:30px auto;padding:0 18px}.hero h1{font-size:clamp(30px,5vw,48px);margin:0 0 8px;letter-spacing:-1.4px}.hero p{color:var(--muted);margin:0 0 24px}.layout{display:grid;grid-template-columns:1fr 1.15fr;gap:18px}.panel{background:#12141deF;border:1px solid var(--line);border-radius:16px;padding:20px;min-width:0}.panel h2{font-size:17px;margin:0 0 15px}.field{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}label{font-size:13px;color:#d5d8e3;font-weight:650}input,textarea,select{width:100%;background:#090b12;border:1px solid #343849;border-radius:9px;padding:11px 12px;color:#f6f7fb;font:14px ui-monospace,monospace;outline:none}input:focus,textarea:focus{border-color:var(--red)}textarea{min-height:350px;resize:vertical;line-height:1.5;tab-size:2}.hint{color:var(--muted);font-size:12px;line-height:1.5}.btn{border:0;border-radius:9px;padding:11px 14px;background:var(--red);color:white;font-weight:750;cursor:pointer}.btn.secondary{background:#252938;border:1px solid #3a4052}.btn:disabled{opacity:.5;cursor:wait}.row{display:flex;gap:9px;flex-wrap:wrap}.row .btn{flex:1}.status{margin-top:14px;border:1px solid var(--line);border-radius:10px;padding:12px;white-space:pre-wrap;overflow-wrap:anywhere;color:#d9deea;font-size:13px;min-height:44px}.status.error{border-color:#9f2944;color:#ff9bad}.status.ok{border-color:#287a57;color:#8fe4b7}.security{margin-top:18px;font-size:12px;color:var(--muted);line-height:1.6}.pill{display:inline-block;border:1px solid #383e50;border-radius:999px;padding:4px 8px;color:#c5cada;font-size:11px;margin-bottom:12px}.wide{grid-column:1/-1}@media(max-width:760px){.layout{grid-template-columns:1fr}textarea{min-height:270px}header{position:static}}
+</style>
+</head>
+<body>
+<header><div class="brand">Tv<span>Host</span></div><a href="https://github.com/Tvmanisback/TvHost" target="_blank" rel="noreferrer">GitHub repository ↗</a></header>
+<main>
+<section class="hero"><div class="pill">TVCORD BOT HOSTING · GITHUB ACTIONS</div><h1>Your bot. Your code. Online.</h1><p>Save a JavaScript bot to this repository and launch it through GitHub Actions.</p></section>
+<div class="layout">
+<section class="panel">
+<h2>1 · Connect GitHub</h2>
+<div class="field"><label for="ghrepo">Repository</label><input id="ghrepo" value="Tvmanisback/TvHost" autocapitalize="off"><div class="hint">Use the owner/repository format. The account must own or have admin access to the repository.</div></div>
+<div class="field"><label for="ghtoken">GitHub access token</label><input id="ghtoken" type="password" autocomplete="off" placeholder="github_pat_…"><div class="hint">Used in memory only to save code, create the encrypted bot-token secret, and start the workflow. Never put this token in your bot code. Use a fine-grained token scoped only to this repo, with Contents: Read and write, Actions: Read and write, and Secrets: Read and write.</div></div>
+<div class="field"><label for="bottoken">TvCord bot token</label><input id="bottoken" type="password" autocomplete="off" placeholder="Paste your TvCord bot token"><div class="hint">The site sends this directly to GitHub's encrypted Actions Secrets API. It is not saved in the website or committed to source code.</div></div>
+<div class="row"><button id="connect" class="btn secondary">Check repository</button><button id="launch" class="btn" disabled>Save & turn online</button></div>
+<div id="status" class="status" role="status">Connect your repository to begin.</div>
+<div class="security">Security note: GitHub tokens are powerful. Create a narrowly scoped token, never share it, and revoke it from GitHub settings when finished. This browser page cannot hide secrets from browser extensions or a compromised device. Workflow runs are temporary (up to 6 hours); GitHub Actions is not a permanent 24/7 hosting service.</div>
+</section>
+<section class="panel">
+<h2>2 · Write or import your bot</h2>
+<div class="field"><label for="filename">Main file</label><input id="filename" value="bot.js" spellcheck="false"><div class="hint">JavaScript only for this first version. Keep your entry point named bot.js for the workflow.</div></div>
+<div class="field"><label for="fileimport">Import an existing .js file</label><input id="fileimport" type="file" accept=".js,text/javascript,application/javascript"></div>
+<div class="field"><label for="code">Bot code</label><textarea id="code" spellcheck="false" autocapitalize="off" autocomplete="off">// TvHost runs this file with Node.js.
+// Your TvCord SDK can read the token from process.env.TVCORD_BOT_TOKEN.
+// Example:
+// import { Bot } from './TvCord.js';
+// const bot = new Bot(process.env.TVCORD_BOT_TOKEN);
+// await bot.start();
+
+console.log('TvHost bot process started.');
+</textarea><div class="hint">Imported files are read locally in your browser, then committed to the selected repository when you launch. Don't include tokens in this editor.</div></div>
+<div class="row"><button id="example" class="btn secondary">Load starter</button><button id="clear" class="btn secondary">Clear editor</button></div>
+</section>
+</div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/libsodium-wrappers@0.7.15/dist/modules/libsodium-wrappers.js"></script>
+<script>
+const $=id=>document.getElementById(id);let repoOk=false;
+function status(msg,type=''){const el=$('status');el.textContent=msg;el.className='status '+type}
+function repoParts(){const p=$('ghrepo').value.trim().split('/');if(p.length!==2||p.some(x=>!x||! /^[A-Za-z0-9_.-]+$/.test(x)))throw Error('Repository must look like Tvmanisback/TvHost.');return p}
+function auth(){const t=$('ghtoken').value.trim();if(!t)throw Error('Enter your GitHub access token.');return {'Accept':'application/vnd.github+json','Authorization':'Bearer '+t,'X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'}}
+async function api(path,opts={}){const r=await fetch('https://api.github.com'+path,{...opts,headers:{...auth(),...(opts.headers||{})}});if(!r.ok){let m='GitHub API error '+r.status;try{const j=await r.json();m+=': '+(j.message||JSON.stringify(j))}catch{}throw Error(m)}if(r.status===204)return null;return r.json()}
+$('connect').onclick=async()=>{try{repoOk=false;$('launch').disabled=true;const [o,r]=repoParts();status('Checking repository access…');const d=await api('/repos/'+o+'/'+r);if(!d.permissions?.admin&&!d.permissions?.push)throw Error('This token does not have write access to the repository.');await api('/repos/'+o+'/'+r+'/actions/secrets/public-key');repoOk=true;$('launch').disabled=false;status('Connected to '+d.full_name+'. Ready to save code and launch the workflow.','ok')}catch(e){status(e.message,'error')}};
+$('fileimport').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;if(!f.name.endsWith('.js')){status('Please import a .js file.','error');return} $('filename').value='bot.js';$('code').value=await f.text();status('Imported '+f.name+' into the editor. Launch to commit it.','ok')};
+$('example').onclick=()=>{$('code').value="// Replace this starter with your TvCord bot code.\nconsole.log('TvHost bot process started.');\n";status('Starter loaded. Add your bot logic before launching.')};
+$('clear').onclick=()=>{$('code').value='';status('Editor cleared.')};
+async function putFile(o,r,path,content,message){let sha;try{const old=await api('/repos/'+o+'/'+r+'/contents/'+path);sha=old.sha}catch(e){if(!String(e.message).includes('404'))throw e}const body={message,content:btoa(unescape(encodeURIComponent(content))),branch:'main'};if(sha)body.sha=sha;return api('/repos/'+o+'/'+r+'/contents/'+path,{method:'PUT',body:JSON.stringify(body)})}
+$('launch').onclick=async()=>{const btn=$('launch');btn.disabled=true;try{const [o,r]=repoParts();const token=$('bottoken').value.trim();const code=$('code').value;if(!repoOk)throw Error('Check repository access first.');if(!token)throw Error('Paste your TvCord bot token.');if(!$('filename').value.trim().endsWith('.js'))throw Error('Main file must be a .js file.');if(!code.trim())throw Error('Add your bot code first.');if(/TVCORD_BOT_TOKEN\s*=\s*['"][^$]/.test(code))throw Error('Remove hard-coded bot tokens from the source. Use process.env.TVCORD_BOT_TOKEN instead.');status('1/4 Saving bot.js to GitHub…');await putFile(o,r,'bot.js',code,'TvHost: save bot code');status('2/4 Preparing encrypted GitHub secret…');await sodium.ready;const key=await api('/repos/'+o+'/'+r+'/actions/secrets/public-key');const enc=sodium.crypto_box_seal(sodium.from_string(token),sodium.from_base64(key.key,sodium.base64_variants.ORIGINAL));const encrypted_value=sodium.to_base64(enc,sodium.base64_variants.ORIGINAL);await api('/repos/'+o+'/'+r+'/actions/secrets/TVCORD_BOT_TOKEN',{method:'PUT',body:JSON.stringify({encrypted_value,key_id:key.key_id})});status('3/4 Secret stored securely. Starting GitHub Actions…');await api('/repos/'+o+'/'+r+'/actions/workflows/host-bot.yml/dispatches',{method:'POST',body:JSON.stringify({ref:'main'})});$('bottoken').value='';status('Launch requested! Open the Actions tab to watch the bot logs. A green workflow means the process ended; a running workflow means the bot process is still active. GitHub Actions runs are temporary, not permanent 24/7 hosting.','ok')}catch(e){status(e.message,'error')}finally{btn.disabled=false}};
+</script>
+</body></html>
