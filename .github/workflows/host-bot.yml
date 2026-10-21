@@ -1,10 +1,6 @@
 name: TvHost Bot
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - 'bot.js'
-      - '.github/workflows/host-bot.yml'
 permissions:
   contents: read
   actions: read
