@@ -17,7 +17,7 @@ header{padding:22px max(18px,calc((100vw - 1100px)/2));border-bottom:1px solid v
 <div class="layout">
 <section class="panel">
 <h2>1 · Connect GitHub</h2>
-<div class="field"><label for="ghrepo">Repository</label><input id="ghrepo" value="Tvmanisback/TvHost" autocapitalize="off"><div class="hint">Use the owner/repository format. The account must own or have admin access to the repository.</div></div>
+<div class="field"><label>TvHost repository</label><input value="Tvmanisback/TvHost" readonly><div class="hint">Bot code, encrypted bot-token secret, and the GitHub Actions workflow are all managed in this repository. No separate bot repository is needed.</div></div>
 <div class="field"><label for="ghtoken">GitHub access token</label><input id="ghtoken" type="password" autocomplete="off" placeholder="github_pat_…"><div class="hint">Used in memory only to save code, create the encrypted bot-token secret, and start the workflow. Never put this token in your bot code. Use a fine-grained token scoped only to this repo, with Contents: Read and write, Actions: Read and write, and Secrets: Read and write.</div></div>
 <div class="field"><label for="bottoken">TvCord bot token</label><input id="bottoken" type="password" autocomplete="off" placeholder="Paste your TvCord bot token"><div class="hint">The site sends this directly to GitHub's encrypted Actions Secrets API. It is not saved in the website or committed to source code.</div></div>
 <div class="row"><button id="connect" class="btn secondary">Check repository</button><button id="launch" class="btn" disabled>Save & turn online</button></div>
@@ -46,7 +46,7 @@ console.log('TvHost bot process started.');
 <script>
 const $=id=>document.getElementById(id);let repoOk=false;let activeRunId=null;
 function status(msg,type=''){const el=$('status');el.textContent=msg;el.className='status '+type}
-function repoParts(){const p=$('ghrepo').value.trim().split('/');if(p.length!==2||p.some(x=>!x||! /^[A-Za-z0-9_.-]+$/.test(x)))throw Error('Repository must look like Tvmanisback/TvHost.');return p}
+function repoParts(){return ['Tvmanisback','TvHost']}
 function auth(){const t=$('ghtoken').value.trim();if(!t)throw Error('Enter your GitHub access token.');return {'Accept':'application/vnd.github+json','Authorization':'Bearer '+t,'X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'}}
 async function api(path,opts={}){const r=await fetch('https://api.github.com'+path,{...opts,headers:{...auth(),...(opts.headers||{})}});if(!r.ok){let m='GitHub API error '+r.status;try{const j=await r.json();m+=': '+(j.message||JSON.stringify(j))}catch{}throw Error(m)}if(r.status===204)return null;return r.json()}
 $('connect').onclick=async()=>{try{repoOk=false;$('launch').disabled=true;const [o,r]=repoParts();status('Checking repository access…');const d=await api('/repos/'+o+'/'+r);if(!d.permissions?.admin&&!d.permissions?.push)throw Error('This token does not have write access to the repository.');await api('/repos/'+o+'/'+r+'/actions/secrets/public-key');repoOk=true;$('launch').disabled=false;$('refresh').disabled=false;status('Connected to '+d.full_name+'. TvHost will use the GitHub Actions REST API from this page to launch and control the workflow.','ok')}catch(e){status(e.message,'error')}};
