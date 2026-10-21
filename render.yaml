@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: tvhost-terminal
+    runtime: node
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: TVHOST_ADMIN_KEY
+        generateValue: true
+      - key: TVHOST_ALLOWED_ORIGIN
+        value: https://tvmanisback.github.io
